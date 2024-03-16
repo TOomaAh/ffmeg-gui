@@ -81,7 +81,7 @@ func (fv *FiltersView) Filter(progressChan *chan float64, files *[]string) func(
 							output = append(output, file)
 							return true, nil
 						}
-						return false, errors.New("File does not match the filters")
+						return false, errors.New("file does not match the filters")
 					},
 				}
 				fv.workerPool.JobQueue <- job
@@ -138,7 +138,7 @@ func processFolder(workPool *core.Dispatcher, folderPath string, output *[]strin
 					*output = append(*output, path)
 					return true, nil
 				}
-				return false, errors.New("File does not match the filters")
+				return false, errors.New("file does not match the filters")
 			},
 		}
 
