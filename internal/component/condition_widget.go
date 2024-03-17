@@ -10,9 +10,7 @@ import (
 type ConditionalWidget struct {
 	widget.BaseWidget
 	key       *widget.Select
-	condition *widget.Select
 	Choice    condition.Condition
-	value     fyne.Widget
 	container *fyne.Container
 }
 
