@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -55,11 +56,11 @@ func (fv *FiltersView) LoadGUI(files *[]string, progressChan *chan float64) fyne
 }
 
 func (fv *FiltersView) Filter(progressChan *chan float64, files *[]string) func() {
-	fv.workerPool = core.NewDispatcher(5)
-
-	fv.workerPool.Run()
 
 	return func() {
+		fv.workerPool = core.NewDispatcher(5)
+
+		fv.workerPool.Run()
 		output := []string{}
 
 		for i, file := range *files {
@@ -84,11 +85,15 @@ func (fv *FiltersView) Filter(progressChan *chan float64, files *[]string) func(
 						return false, errors.New("file does not match the filters")
 					},
 				}
-				fv.workerPool.JobQueue <- job
-
+				fv.workerPool.AddJob(job)
 			}
 
 		}
+
+		fv.workerPool.Close()
+
+		// sort the output
+		sort.Strings(output)
 
 		// show the results
 
@@ -142,7 +147,7 @@ func processFolder(workPool *core.Dispatcher, folderPath string, output *[]strin
 			},
 		}
 
-		workPool.JobQueue <- job
+		workPool.AddJob(job)
 
 		return nil
 	})
